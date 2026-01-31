@@ -1,0 +1,32 @@
+Stellar Developer Docs (main site) — canonical dev docs for Stellar network, accounts, transactions, and Soroban guides. Use for: transaction/account concepts, Soroban tutorials, recommended pattern: https://developers.stellar.org/docs
+Soroban Docs / API Reference (official repo/docs) — in-depth API & contract model (data types, guest/host model, storage, fees). Use for: exact contract function signatures, storage limits, cost model: https://github.com/stellar-deprecated/soroban-docs
+Soroban Examples (official GitHub repo) — working example contracts maintained by Stellar. Use for: copyable patterns, test cases, how to structure registry and storage. Highly useful for MVP contract skeletons: https://github.com/stellar/soroban-examples
+____________________________
+SDKs & client tooling (for building frontend and AI-IDE integration)
+
+Stellar JS SDK (official) — @stellar/stellar-sdk — client APIs and Soroban RPC support.
+Use for: constructing/signing transactions from your web app, and calling Soroban RPC: https://stellar.github.io/js-stellar-sdk/
+
+js-soroban-client / js soroban client repos (note: some packages were consolidated — use stellar-sdk migration docs) — older client patterns and examples.
+Use for: migration reference and lower-level RPC examples: https://github.com/stellar/js-soroban-client
+
+Soroban client / examples (community repos) — e.g., scaffold / community example repos (good for additional patterns & tests).
+Use for: extra patterns (agent registries, reward contracts) and faster prototyping: https://github.com/ScaffoldRust/SRust-Soroban-examples
+____________________________________
+
+Wallet & integration docs (required for demo UX)
+
+Freighter wallet docs & integration guide — how dApp requests signing, Soroban XDR signing, and testing on testnet.
+Use for: integrating login/wallet actions in the frontend demo and signing Soroban transactions: https://developers.stellar.org/docs/build/guides/freighter
+
+Soroban RPC / Horizon API references — how to read ledger state, submit transactions and stream events.
+Use for: reputation queries, streaming events for reputation updates, and transaction status handling: https://developers.stellar.org/docs/data/apis/horizon
+
+______________________________________
+Reference & deeper technical resources (helpful but not mandatory for MVP)
+
+Soroban settings / validator docs — for deeper understanding of ledger settings and contract environment (helpful if you tune contract limits):https://developers.stellar.org/docs/validators/admin-guide/soroban-settings
+
+Horizon / Stellar Core GitHub repos & docs — useful if you need a local dev stack or to run Horizon/Soroban locally: https://github.com/stellar/stellar-horizon
+
+Community example repos & audits — community contracts showing reward/escrow/loans patterns (copy safe ideas; adapt registry+reputation logic): https://github.com/kommitters/soroban_smart_contracts

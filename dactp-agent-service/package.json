@@ -1,0 +1,22 @@
+{
+  "name": "dactp-agent-service",
+  "version": "1.0.0",
+  "description": "DACTP Backend Agent Service - Autonomous loan monitoring and repayment",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "@stellar/stellar-sdk": "^13.0.0",
+    "node-cron": "^3.0.3",
+    "dotenv": "^16.4.5",
+    "axios": "^1.7.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  },
+  "keywords": ["stellar", "soroban", "defi", "agent", "automation", "dactp"],
+  "author": "DACTP Team",
+  "license": "MIT"
+}

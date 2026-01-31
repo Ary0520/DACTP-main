@@ -1,0 +1,140 @@
+Decentralized Agentic Compliance & Trust Protocol (DACTP)
+
+IMPORTANT CLARIFICATION:
+DACTP is a PROTOCOL, not a consumer application.
+What is built in this project is:
+1) The DACTP protocol (core smart contracts)
+2) A reference lending demo that CONSUMES the protocol
+This demo exists only to prove the protocol works on testnet.
+
+--------------------------------------------------
+
+🧩 Problem Being Solved (Real, Non-Generic, Unsolved)
+
+Modern financial systems rely on trust, delegation, and behavioral history.
+Web3 systems largely do not.
+
+Current DeFi limitations:
+- Over-collateralization is mandatory
+- No persistent, cross-app reputation
+- No native delegation with accountability
+- No way to express “limited trust” on-chain
+
+This blocks:
+- Under-collateralized lending
+- Credit-based financial primitives
+- Agent-driven automation with accountability
+- Real-world financial adoption
+
+--------------------------------------------------
+
+🎯 What DACTP Does (Protocol Definition)
+
+DACTP is a decentralized trust and delegation layer for Stellar/Soroban.
+
+It provides:
+1) On-chain reputation as a first-class primitive
+2) Revocable, scoped agent delegation
+3) Deterministic reputation updates based on financial behavior
+4) A reusable protocol that any Stellar dApp can integrate
+
+DACTP does NOT:
+- Issue tokens
+- Perform lending itself
+- Perform KYC
+- Make subjective trust decisions
+
+It only enforces rules.
+
+--------------------------------------------------
+
+🧠 Core Concepts
+
+1️⃣ Reputation (On-Chain Risk Allowance)
+
+- Reputation is NOT social trust
+- Reputation is NOT voting-based
+- Reputation represents how much financial risk the protocol allows
+
+Properties:
+- Stored on-chain
+- Objective
+- Deterministic
+- Event-driven
+- Non-editable by users
+
+Reputation scale:
+0 – 100
+
+Initial reputation:
+50 (neutral, unproven user)
+
+--------------------------------------------------
+
+2️⃣ Agentic Delegation
+
+Users can create agents with:
+- Limited permissions (scopes)
+- Spending limits
+- Expiry
+- Revocation
+
+Example:
+“Agent A can repay loans up to 10 XLM for the next 30 days.”
+
+Agents do NOT own funds.
+Agents execute actions on behalf of users under strict rules.
+
+--------------------------------------------------
+
+💡 Reputation Update Logic (MVP-Level)
+
+Reputation updates are triggered ONLY by financial outcomes.
+
+Positive event:
+Loan repayment completed
+→ +5 reputation
+
+Negative event:
+Loan default / missed repayment
+→ −15 reputation
+
+Severe event:
+Fraud / malicious behavior
+→ reputation frozen (no more delegation)
+
+Key rule:
+Reputation increases slowly and decreases quickly.
+This mirrors real credit systems.
+
+--------------------------------------------------
+
+🧪 Reference Use Case (For Demonstration Only)
+
+To demonstrate DACTP on testnet, we build a small reference dApp:
+An under-collateralized micro-lending demo.
+
+This demo:
+- Is NOT the product
+- Is NOT the protocol
+- Simply consumes DACTP
+
+Any other app (insurance, remittance, payroll, SME lending) could use DACTP the same way.
+
+--------------------------------------------------
+
+🛠 Why Stellar + Soroban
+
+- Ultra-low fees → frequent reputation checks are viable
+- Fast finality → agent automation is practical
+- Soroban contracts → enforce delegation and reputation rules on-chain
+- Stellar ecosystem focus → real finance, inclusion, infrastructure
+
+--------------------------------------------------
+
+USP (Why This Is Different)
+
+- Reputation is enforceable, not cosmetic
+- Delegation is permissioned and revocable
+- Trust is protocol-level, not app-level
+- Enables under-collateralized finance without custody or oracles

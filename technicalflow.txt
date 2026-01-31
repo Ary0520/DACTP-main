@@ -1,0 +1,254 @@
+Decentralized Agentic Compliance & Trust Protocol (DACTP)
+Purpose of This File
+
+This document is a clear, unambiguous build guide for an AI IDE (or developer) to implement:
+
+The DACTP protocol on Soroban (no mock or fake data)
+
+A real demo dApp that directly uses the protocol
+
+The goal is working infrastructure + visible demo, not polish.
+
+PART 1: WHAT DACTP IS (PROTOCOL DEFINITION)
+Core Idea
+
+DACTP is a Soroban-native trust layer that allows dApps to safely accept actions from agents (delegated actors) using:
+
+explicit permissions
+
+on-chain reputation
+
+instant revocation
+
+DACTP does not implement bots, AI, or automation logic.
+It only answers one question:
+
+“Is this agent allowed to perform this action right now?”
+
+Key Definitions
+Agent
+
+An agent is:
+
+a Soroban address (wallet)
+
+acting on behalf of an owner
+
+with bounded authority
+
+Agents may represent bots, scripts, or humans, but DACTP is agnostic.
+
+Owner
+
+The address that registers and controls an agent.
+
+Reputation
+
+A numeric on-chain score representing historical behavior.
+
+PART 2: PROTOCOL ARCHITECTURE (SOROBAN)
+
+DACTP consists of two core contracts (plus an example consumer contract).
+
+1. AgentManager Contract
+Responsibility
+
+Manages agent identity, ownership, permissions, and revocation.
+
+Stored State
+
+For each agent address:
+
+owner address
+
+permissions (scopes)
+
+limits (e.g. max loan amount)
+
+revoked flag
+
+Required Functions
+
+register_agent(agent, owner, scopes, limits)
+
+callable only by owner
+
+initializes agent record
+
+revoke_agent(agent)
+
+callable only by owner
+
+permanently disables agent
+
+is_authorized(agent, action, amount) -> bool
+
+returns false if revoked
+
+checks if action is in scopes
+
+checks if amount is within limits
+
+This contract never executes financial logic.
+
+2. ReputationManager Contract
+Responsibility
+
+Tracks on-chain reputation scores for agents.
+
+Stored State
+
+agent_address -> score (u32)
+
+Rules
+
+default score = 50
+
+score bounded between 0 and 100
+
+Required Functions
+
+get_score(agent) -> u32
+
+update_score(agent, delta)
+
+positive or negative
+
+callable only by approved consumer contracts (e.g. lending demo)
+
+Reputation updates are triggered by real outcomes, not simulations.
+
+3. Authorization Flow (Cross-Contract)
+
+Consumer dApps must:
+
+call AgentManager.is_authorized(...)
+
+call ReputationManager.get_score(...)
+
+enforce their own thresholds
+
+DACTP does not force logic; it provides verifiable inputs.
+
+PART 3: DEMO CONSUMER CONTRACT (REAL, NOT MOCK)
+Reputation-Gated Lending Contract
+
+This contract exists to prove DACTP works.
+
+Behavior
+
+Allows under-collateralized loans only via certified agents
+
+Stored State
+
+loan records (agent, amount, repaid)
+
+Required Functions
+
+request_loan(agent, amount)
+
+checks AgentManager authorization
+
+checks ReputationManager score >= threshold (e.g. 60)
+
+issues loan if valid
+
+repay_loan(agent)
+
+marks loan repaid
+
+calls ReputationManager.update_score(+5)
+
+liquidate_or_fail(agent) (optional)
+
+penalizes reputation on failure
+
+No fake repayments. No simulated outcomes.
+
+PART 4: DEMO dAPP (FRONTEND)
+Purpose
+
+The demo app exists to visually prove protocol behavior to judges.
+It is not a product.
+
+Tech
+
+React
+
+Freighter wallet
+
+Stellar testnet/futurenet
+
+UI Pages / Flows
+1. Agent Registration
+
+Connect wallet (owner)
+
+Input agent address
+
+Select permissions
+
+Register agent on-chain
+
+2. Agent Dashboard
+
+View agent status
+
+View reputation score (on-chain)
+
+View revoked / active state
+
+3. Lending Demo
+
+Request loan as agent
+
+Borrow succeeds/fails based on score
+
+Repay loan
+
+See reputation update live
+
+All values come directly from contracts.
+
+PART 5: DEPLOYMENT FLOW
+
+Deploy AgentManager
+
+Deploy ReputationManager
+
+Deploy LendingDemo contract
+
+Configure approved callers
+
+Connect frontend
+
+PART 6: NON-GOALS (IMPORTANT)
+
+The AI IDE must NOT:
+
+implement bots
+
+simulate data
+
+fake oracle feeds
+
+hardcode reputation outcomes
+
+embed AI logic
+
+FINAL CHECK
+
+This implementation must demonstrate:
+
+real delegation
+
+real authorization
+
+real reputation changes
+
+real revocation
+
+If all four are visible, the protocol is valid.
+
+Narrative for Judges:
+“DACTP enables trustless delegation on Stellar by making agent behavior measurable, permissioned, and revocable—unlocking real under-collateralized and autonomous finance.”
