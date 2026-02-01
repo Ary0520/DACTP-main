@@ -131,7 +131,7 @@ cd dactp-frontend
 npm install
 npm run dev
 ```
-Open [http://localhost:5173](http://localhost:5173) to connect your wallet.
+ connect your wallet.
 
 ---
 
