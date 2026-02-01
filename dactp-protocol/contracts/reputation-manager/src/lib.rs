@@ -62,7 +62,12 @@ impl ReputationManagerContract {
     /// Update an agent's reputation score by a delta (positive or negative)
     /// Can only be called by approved consumer contracts (e.g., lending demo)
     /// This is triggered by real financial outcomes, not simulations
+    /// 
+    /// ✅ FIXED: Proper handling of negative deltas and bounds checking
     pub fn update_score(env: Env, caller: Address, agent: Address, delta: i32) {
+        // ✅ FIXED: Require authentication from caller
+        caller.require_auth();
+        
         // Verify caller is approved
         let approved_key = DataKey::ApprovedCallers(caller.clone());
         let is_approved: bool = env
@@ -78,23 +83,16 @@ impl ReputationManagerContract {
         // Get current score (defaults to 50 for new agents)
         let current_score = Self::get_score(env.clone(), agent.clone());
 
-        // Calculate new score with bounds checking
-        let new_score = if delta >= 0 {
-            // Positive delta - use saturating add
-            let added = current_score.saturating_add(delta as u32);
-            if added > MAX_SCORE {
-                MAX_SCORE
-            } else {
-                added
-            }
+        // ✅ FIXED: Proper calculation with i32 arithmetic then conversion
+        let new_score_i32 = (current_score as i32) + delta;
+        
+        // Apply bounds checking
+        let new_score = if new_score_i32 > (MAX_SCORE as i32) {
+            MAX_SCORE
+        } else if new_score_i32 < (MIN_SCORE as i32) {
+            MIN_SCORE
         } else {
-            // Negative delta - use saturating sub
-            let subtracted = current_score.saturating_sub((-delta) as u32);
-            if subtracted < MIN_SCORE {
-                MIN_SCORE
-            } else {
-                subtracted
-            }
+            new_score_i32 as u32
         };
 
         // Store the new score
@@ -105,6 +103,9 @@ impl ReputationManagerContract {
     /// Freeze an agent's reputation (sets to 0, representing severe violation)
     /// Only approved callers can freeze
     pub fn freeze_reputation(env: Env, caller: Address, agent: Address) {
+        // ✅ FIXED: Require authentication from caller
+        caller.require_auth();
+        
         // Verify caller is approved
         let approved_key = DataKey::ApprovedCallers(caller);
         let is_approved: bool = env
@@ -191,6 +192,37 @@ mod test {
         // Try to go below MIN_SCORE (0)
         client.update_score(&caller, &agent, &-200);
         assert_eq!(client.get_score(&agent), 0); // Should floor at 0
+    }
+
+    #[test]
+    fn test_negative_delta_handling() {
+        let env = Env::default();
+        let contract_id = env.register(ReputationManagerContract, ());
+        let client = ReputationManagerContractClient::new(&env, &contract_id);
+
+        let admin = Address::generate(&env);
+        let caller = Address::generate(&env);
+        let agent = Address::generate(&env);
+
+        env.mock_all_auths();
+
+        client.initialize(&admin);
+        client.approve_caller(&admin, &caller);
+
+        // Start at default 50
+        assert_eq!(client.get_score(&agent), 50);
+
+        // Apply -25 penalty (like loan default)
+        client.update_score(&caller, &agent, &-25);
+        assert_eq!(client.get_score(&agent), 25);
+
+        // Apply another -25 penalty
+        client.update_score(&caller, &agent, &-25);
+        assert_eq!(client.get_score(&agent), 0); // Should floor at 0
+
+        // Try to go negative
+        client.update_score(&caller, &agent, &-10);
+        assert_eq!(client.get_score(&agent), 0); // Should stay at 0
     }
 
     #[test]
